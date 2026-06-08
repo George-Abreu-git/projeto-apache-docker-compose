@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>George Abreu de Siqueira</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       TOKENS & RESET
+    ============================================================ */
+    :root {
+      --bg:          #0b0f14;
+      --surface:     #111820;
+      --surface-2:   #1a2535;
+      --border:      rgba(255,255,255,0.07);
+      --accent:      #e8c87a;         /* gold */
+      --accent-dim:  rgba(232,200,122,0.15);
+      --text-primary:#f0ebe0;
+      --text-muted:  #8b94a3;
+      --radius:      12px;
+      --radius-lg:   20px;
+      --font-display:'Playfair Display', serif;
+      --font-body:   'DM Sans', sans-serif;
+      --transition:  0.3s cubic-bezier(.4,0,.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       BANNER SECTION
+       ➜ Troque a imagem abaixo pelo caminho do seu banner
+    ============================================================ */
+    .banner {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      background-color: var(--surface-2);
+      background-image: url('banner.jpg');
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .banner__placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .banner__placeholder svg {
+      opacity: 0.3;
+      width: 48px;
+      height: 48px;
+    }
+
+    /* decorative grid overlay */
+    .banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: linear-gradient(to bottom, transparent, rgba(0,0,0,.6) 40%, rgba(0,0,0,.6) 60%, transparent);
+    }
+
+    /* gradient fade at the bottom of banner → merges into page */
+    .banner__fade {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      z-index: 2;
+    }
+
+    /* ============================================================
+       MAIN LAYOUT
+    ============================================================ */
+    .page-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ============================================================
+       PROFILE CARD (overlaps banner)
+    ============================================================ */
+    .profile-card {
+      position: relative;
+      z-index: 10;
+      margin-top: -80px;   /* pulls card up over banner */
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 36px 36px;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      box-shadow: 0 8px 40px rgba(0,0,0,.5);
+      animation: cardIn .7s ease both;
+    }
+
+    @keyframes cardIn {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── Avatar ─────────────────────────────────────────────── */
+    .avatar-wrap {
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+      background: var(--surface-2);
+      object-fit: cover;
+      display: block;
+      transition: transform var(--transition);
+    }
+
+    .avatar-wrap:hover .avatar { transform: scale(1.04); }
+
+    /* ring pulse */
+    .avatar-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      opacity: 0;
+      animation: ringPulse 3s ease-in-out 1.2s infinite;
+    }
+
+    @keyframes ringPulse {
+      0%,100% { opacity:0;   transform:scale(1);    }
+      50%      { opacity:.35; transform:scale(1.06); }
+    }
+
+    /* avatar placeholder icon */
+    .avatar-placeholder {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+      background: var(--surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+      line-height: 1.4;
+      padding: 12px;
+      cursor: default;
+    }
+
+    /* ── Name & meta ─────────────────────────────────────────── */
+    .profile-info { flex: 1; }
+
+    .profile-name {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      animation: fadeUp .6s ease .15s both;
+    }
+
+    .profile-name span {
+      color: var(--accent);
+    }
+
+    .profile-tagline {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      animation: fadeUp .6s ease .25s both;
+    }
+
+    .profile-divider {
+      margin: 18px 0;
+      height: 1px;
+      background: var(--border);
+      animation: fadeIn .6s ease .3s both;
+    }
+
+    .profile-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      animation: fadeUp .6s ease .35s both;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid rgba(232,200,122,0.25);
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .badge:hover {
+      background: rgba(232,200,122,0.25);
+      transform: translateY(-1px);
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(10px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity:0; } to { opacity:1; }
+    }
+
+    /* ============================================================
+       SECTION SHELL
+    ============================================================ */
+    .section {
+      margin-top: 40px;
+      animation: fadeUp .7s ease .4s both;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-header__line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* ============================================================
+       PROJECT TEXT BOX
+       ➜ Coloque seu texto entre as tags <p> abaixo
+    ============================================================ */
+    .project-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      transition: box-shadow var(--transition);
+    }
+
+    .project-box:hover {
+      box-shadow: 0 0 0 1px var(--accent-dim), 0 8px 32px rgba(0,0,0,.35);
+    }
+
+    .project-box h2 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+
+    .project-box p {
+      font-size: 0.97rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+
+    .project-box p:last-child { margin-bottom: 0; }
+
+    .project-box strong { color: var(--text-primary); font-weight: 500; }
+
+    .project-box a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(232,200,122,0.4);
+      transition: border-color var(--transition);
+    }
+
+    .project-box a:hover { border-color: var(--accent); }
+
+    /* ============================================================
+       TECH STACK CHIPS (opcional)
+    ============================================================ */
+    .stack-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      padding: 6px 16px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      transition: border-color var(--transition), color var(--transition), transform var(--transition);
+    }
+
+    .chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer strong { color: var(--accent); font-weight: 500; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 600px) {
+      .profile-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 24px 20px 28px;
+        margin-top: -60px;
+      }
+
+      .profile-badges { justify-content: center; }
+
+      .project-box { padding: 22px 20px; }
+
+      footer { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       BANNER
+       ➜ Para usar sua imagem:
+         1. Coloque o arquivo (ex: banner.jpg) na mesma pasta do index.html
+         2. Substitua a div.banner__placeholder pela linha abaixo:
+            <img src="banner.jpg" alt="Banner" style="width:100%;height:100%;object-fit:cover;display:block;">
+         OU adicione a seguinte linha no CSS:
+            .banner { background-image: url('banner.jpg'); background-size: cover; background-position: center; }
+  ============================================================ -->
+  <div class="banner">
+    <div class="banner__fade"></div>
+  </div>
+  <!-- /BANNER -->
+
+  <div class="page-wrapper">
+
+    <!-- ============================================================
+         PROFILE CARD
+    ============================================================ -->
+    <div class="profile-card">
+
+      <!-- ── Avatar ─────────────────────────────────────────────
+           PERSONALIZE: troque o <div class="avatar-placeholder">
+           pela linha abaixo quando tiver sua foto:
+           <img class="avatar" src="foto.jpg" alt="George Abreu de Siqueira" />
+      ──────────────────────────────────────────────────────── -->
+      <div class="avatar-wrap">
+        <div class="avatar-placeholder">
+          <img class="avatar" src="profile.jpg" alt="George Abreu de Siqueira" />
+        </div>
+      </div>
+
+      <div class="profile-info">
+        <h1 class="profile-name">
+          George Abreu<br><span>de Siqueira</span>
+        </h1>
+        <p class="profile-tagline">
+          <!-- ➜ PERSONALIZE: altere a tagline abaixo -->
+          Desenvolvedor &middot; Engenheiro de Software &middot; DevOps
+        </p>
+
+        <div class="profile-divider"></div>
+
+        <div class="profile-badges">
+          <!-- ➜ PERSONALIZE: adicione, remova ou altere as badges -->
+          <span class="badge">&#9670; Linux</span>
+          <span class="badge">&#9670; Docker</span>
+          <span class="badge">&#9670; Apache</span>
+          <span class="badge">&#9670; HTML / CSS</span>
+          <span class="badge">&#9670; Cloud</span>
+        </div>
+      </div>
+    </div>
+    <!-- /PROFILE CARD -->
+
+    <!-- ============================================================
+         SOBRE O PROJETO
+         ➜ PERSONALIZE: escreva seu texto entre as tags <p>
+            Todo o conteúdo já está em UTF-8.
+    ============================================================ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">Sobre o Projeto</span>
+        <div class="section-header__line"></div>
+      </div>
+
+      <div class="project-box">
+        <h2>
+          <!-- ➜ PERSONALIZE: título do seu projeto -->
+          Desafio: Aplicação HTML em Container Apache
+        </h2>
+
+        <p>
+          <!-- ➜ PERSONALIZE: substitua este parágrafo pelo seu texto -->
+          Este projeto tem como objetivo demonstrar o processo completo de
+          <strong>containerização de uma aplicação web estática</strong> utilizando
+          <strong>Apache HTTP Server</strong> dentro de um container Docker.
+        </p>
+
+        <p>
+          <!-- ➜ PERSONALIZE: adicione mais parágrafos conforme necessário -->
+          A página foi construída com <strong>HTML5 e CSS3 puros</strong>, sem
+          dependências externas de JavaScript, garantindo leveza e compatibilidade
+          máxima. O servidor Apache serve os arquivos diretamente a partir do
+          diretório <code style="color:var(--accent);background:var(--accent-dim);
+          padding:2px 6px;border-radius:4px;font-size:.85em;">/usr/local/apache2/htdocs</code>,
+          seguindo a configuração padrão da imagem oficial <em>httpd</em>.
+        </p>
+
+        <p>
+          <!-- ➜ PERSONALIZE: descreva o desafio ou contexto -->
+          O desafio consiste em empacotar todos os assets estáticos, configurar
+          corretamente o <code style="color:var(--accent);background:var(--accent-dim);
+          padding:2px 6px;border-radius:4px;font-size:.85em;">Dockerfile</code>
+          e realizar o deploy do container expondo a porta <strong>80</strong>,
+          tornando a aplicação acessível via navegador em qualquer ambiente que
+          possua o Docker instalado.
+        </p>
+
+        <!-- ➜ Adicione mais <p> à vontade aqui -->
+      </div>
+    </div>
+    <!-- /SOBRE O PROJETO -->
+
+    <!-- ============================================================
+         TECNOLOGIAS (opcional — remova a seção se não quiser)
+    ============================================================ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">Tecnologias</span>
+        <div class="section-header__line"></div>
+      </div>
+
+      <div class="stack-grid">
+        <!-- ➜ PERSONALIZE: adicione ou remova chips -->
+        <div class="chip">HTML 5</div>
+        <div class="chip">CSS 3</div>
+        <div class="chip">Docker</div>
+        <div class="chip">Apache httpd</div>
+        <div class="chip">Git</div>
+        <div class="chip">Linux / Bash</div>
+        <div class="chip">UTF-8</div>
+      </div>
+    </div>
+    <!-- /TECNOLOGIAS -->
+
+    <!-- ============================================================
+         FOOTER
+    ============================================================ -->
+    <footer>
+      <span>&copy; 2025 <strong>George Abreu de Siqueira</strong></span>
+      <span>Servido com <strong>Apache HTTP Server</strong> &middot; Docker Container</span>
+    </footer>
+
+  </div><!-- /page-wrapper -->
+
+</body>
+</html>
